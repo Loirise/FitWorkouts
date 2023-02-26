@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Plans</title>
+</head>
+<body>
+    <nav>
+        <a href="/trainingplans/new">Create new plan</a>
+    </nav>
+    <h1>All Training Plans</h1>
+    <ul>
+        <% for(let plan of trainingplans){ %>
+        <li><a href="trainingplans/<%= plan._id %>"><%= plan.title %></a></li>
+        <% } %>
+    </ul>
+</body>
+</html>
