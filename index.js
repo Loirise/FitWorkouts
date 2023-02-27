@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const methodOverride = require('method-override');
+const ejsMate = require('ejs-mate')
 const TrainingPlan = require('./models/trainingPlan');
 
 const app = express();
@@ -62,11 +64,13 @@ db.once('open', () => {
     console.log('Database connected');
 });
 
+app.engine('ejs', ejsMate);
 app.set('view enginge', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
 /* app.use('/public', express.static('public')); */
 
 app.use(express.urlencoded({extended: true}));
+app.use(methodOverride('_method'));
 
 app.get('/', (req, res) => {
     res.render('home.ejs');
@@ -114,10 +118,49 @@ app.get('/trainingplans/:id', async (req, res) => {
 
 app.get('/trainingplans/:id/edit', async (req, res) => {
     const plan = await TrainingPlan.findById(req.params.id)
-    console.log(plan.exercises)
-    res.render('trainingplans/edit.ejs', {plan, exercisesList});
+    const list = []
+    const exercises = plan.exercises
+    for(let i=0; i < exercises.length; i++){
+        for(const [keyOut, valueOut] of Object.entries(exercises[i])){
+            for(const [keyIn, valueIn] of Object.entries(valueOut)){
+                list.push([keyIn, valueIn])
+            };
+        };
+    };
+    res.render('trainingplans/edit.ejs', {plan, list, exercisesList});
 })
 
+app.put('/trainingplans/:id', async (req,res) => {
+    /* get all exercises arrays */
+    let exercisesList = []
+    for(let i=1; i < 13; i++){
+        let list = []
+        let exercise = {}
+        if(req.body.hasOwnProperty(i)){
+            list = req.body[i]
+            exercise[list[0]] = list[1];
+            exercisesList.push(exercise);
+        };
+    };
+    /* convert exercicesList items into objects */
+    let exercises = []
+    for(let j=0; j < exercisesList.length; j++){
+        let temp = {};
+        temp[j+1] = exercisesList[j];
+        exercises.push(temp);
+    }
+    const trainingplanPart = req.body.trainingplan;
+    trainingplanPart['exercises'] = exercises;
+    const { id } = req.params
+    const trainingplan = await TrainingPlan.findByIdAndUpdate(id, { ...trainingplanPart });
+    res.redirect(`/trainingplans/${ id }`);
+});
+
+app.delete('/trainingplans/:id', async (req, res) => {
+    const {id} = req.params;
+    await TrainingPlan.findByIdAndDelete(id);
+    res.redirect('/trainingplans');
+})
 
 app.listen(3000, () => {
     console.log('Serving on port 3000');

@@ -1,20 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Training Plans</title>
-</head>
-<body>
-    <nav>
-        <a href="/trainingplans/new">Create new plan</a>
-    </nav>
-    <h1>All Training Plans</h1>
-    <ul>
-        <% for(let plan of trainingplans){ %>
-        <li><a href="trainingplans/<%= plan._id %>"><%= plan.title %></a></li>
-        <% } %>
-    </ul>
-</body>
-</html>
+<% layout('./layouts/boilerplate.ejs') %>
+<section class="w-75 mx-auto">
+    <h1 class="text-center mb-3">All Training Plans</h1>
+    <% for(let plan of trainingplans){ %>
+        <div class="card d-flex flex-column mb-3">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-10 d-flex flex-column">
+                        <div class="">
+                            <h4 class="ms-3 mt-1"><%= plan.title %></h4>
+                        </div>
+                        <div class="d-flex">
+                            <h6 class="text-muted mx-3">$ <%= plan.price %></h6>
+                            <h6 class="text-muted mx-2"><%= plan.level %></h6>
+                            <h6 class="text-muted mx-2"><%= plan.duration %> weeks</h6>
+                            <h6 class="text-muted mx-3"><%= plan.days %>days/week</h6>
+                        </div>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center">
+                        <a href="/trainingplans/<%= plan._id %>" class="btn btn-info px-2 py-1">Details</a>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    <% } %>
+</section>
+

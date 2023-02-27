@@ -1,32 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Show</title>
-</head>
-<body>
-    <!-- <p><%= plan %></p> -->
-    <h1><%= plan.title %></h1>
-    <h2><%= plan.price %></h2>
-    <h3><%= plan.level %></h3>
-    <h3><%= plan.duration %></h3>
-    <ul>
-        <% for(let item of plan.exercises){ %>
-        <li>
-            <% for(const [keyOut, valueOut] of Object.entries(item)){ %>
-                <% for(const [keyIn, valueIn] of Object.entries(valueOut)){ %>
-                    <%= `Exercise ${keyOut}:  ${keyIn} - ${valueIn} reps` %>
-                <% } %>
+<% layout('./layouts/boilerplate.ejs') %>
+<div class="card w-50 mx-auto">
+    <div class="card-body">
+        <h5 class="card-title text-center mb-3"><%= plan.title %></h5>
+        <div class="d-flex mb-2 justify-content-evenly border-bottom pb-2">
+            <h6 class="card-subtitle text-muted">$ <%= plan.price %></h6>
+            <h6 class="card-subtitle text-muted"><%= plan.level %></h6>
+            <h6 class="card-subtitle text-muted"><%= plan.duration %> weeks</h6>
+            <h6 class="card-subtitle text-muted"><%= plan.days %>days/week</h6>
+        </div>
+        <!-- <div class="card-header text-center text-muted">
+            &darr;&darr;&darr;
+        </div> -->
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Exercise</th>
+                    <th scope="col">Sets</th>
+                    <th scope="col">Reps</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% for(let item of plan.exercises){ %>
+                <tr>
+                    <th scope="row"><%= plan.exercises.indexOf(item)+1 %></th>
+                    <td><%= item.exercise %></td>
+                    <td><%= item.sets %></td>
+                    <td><%= item.reps %></td>
+                </tr>
             <% } %>
-        </li>
-        <% } %>
-    </ul>
-    <footer>
-        <a href="/trainingplans">All Plans</a>
-        <a href="/trainingplans/<%= plan._id %>/edit">Edit Plan</a>
-    </footer>
+            </tbody>
+        </table>
 
-</body>
-</html>
+        <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+        <div class="mt-2 d-flex justify-content-around">
+            <a href="/trainingplans" class="card-link btn btn-primary">Go Back</a>
+            <a href="/trainingplans/<%= plan._id %>/edit" class="card-link btn btn-info mx-2">Edit Plan</a>
+            <form action="/trainingplans/<%= plan._id %>?_method=DELETE" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-danger">DELETE</button>
+            </form>
+        </div>
+    </div>
+</div>

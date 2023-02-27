@@ -1,57 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Plan</title>
-</head>
-<body>
-    <nav>
-        <a href="/trainingplans/<%= plan._id %>">Go back</a>
-    </nav>
-    <h1>Edit Training Plan</h1>
-    <form action="/trainingplans" method="POST">
-        <div>
-            <label for="title">Title: </label>
-            <input type="text" name="trainingplan[title]" id="title" value="<%= plan.title %>">
+<% layout('./layouts/boilerplate.ejs') %>
+<section class="w-75 mx-auto">
+    <div class="d-flex justify-content-between">
+        <h1 class="">Edit Plan</h1>
+        <div class="align-self-center">
+            <a href="/trainingplans" class="btn btn-primary">Go Back</a>
         </div>
-        <div>
-            <label for="price">Price: </label>
-            <input type="text" name="trainingplan[price]" id="price" value="<%= plan.price %>">
-        </div>
-        <div>
-            <label for="duration">Duration: </label>
-            <input type="text" name="trainingplan[duration]" id="duration" value="<%= plan.duration %>">
-        </div>
-        <div>
-            <label for="level">Level: </label>
-            <input type="text" name="trainingplan[level]" id="level" value="<%= plan.level %>">
-        </div>
-
-        <% for(let i=1; i < 13; i++){ %>
-            <div>
-                <label for="<%= `${i}[]` %>">Exercise: </label>
-                <select name="<%= `${i}[]` %>" id="<%= `${i}[]` %>">
-                        <option selected disabled>Choose exercise</option>
-                    <% for(let exercise of exercisesList){ %>
-                        <option value="<%= exercise %>"><%= exercise %></option>
-                    <% } %>
-                </select>
-                <label for="<%= `${i}[]` %>">Reps: </label>
-                <select name="<%= `${i}[]` %>" id="<%= `${i}[]` %>">
-                    <option selected disabled>Choose rep count</option>
-                    <% for(let j=5; j < 26; j++){ %>
-                        <option value="<%= j %>"><%= j %></option>
-                    <% } %>
-                </select>
+    </div>
+    <form action="/trainingplans/<%= plan._id %>?_method=PUT" method="POST">
+        <div class="d-flex mb-3">
+            <div class="form-floating me-3 w-75">
+                <input type="text" class="form-control" name="trainingplan[title]" id="title" placeholder="Title" value="<%= plan.title %>">
+                <label for="title">Title</label>
             </div>
-        <% } %>
-        
+            <button class="ms-3 btn btn-success" type="submit">Update plan</button>
+        </div>
+        <!-- PRICE -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <label for="price" class="text-center w-50">Price <small>(in $USD)</small></label>
+            <input type="number" class="form-control w-50" name="trainingplan[price]" id="price" min="5" max="250" step="0.05" value="<%= plan.price %>">
+        </div>
+        <!-- DURATION -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <label for="duration" class="text-center w-50">Duration <small>(in weeks)</small></label>
+            <input type="number" class="form-control w-50" name="trainingplan[duration]" id="duration" min="1" max="52" value="<%= plan.duration %>">
+        </div>
+        <!-- LEVEL -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <label for="level" class="text-center w-50">Level</label>
+            <select class="form-select w-50" name="trainingplan[level]" id="level">
+                <% for(let item of ['beginner', 'intermediate', 'advanced']){ %>\
+                    <% if (item == plan.level) { %>
+                        <option selected value="<%= item %>"><%= item %></option>
+                    <% } else { %>
+                        <option value="<%= item %>"><%= item %></option>
+                    <% } %>
+                <% } %>
+            </select>
+        </div>
+        <div class="container">
+            <div class="row justify-content-between">
+                <% for(let i=1; i < 13; i++){ %>
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
+                        <div class="pb-2 px-2 pt-1 border shadow d-flex flex-column">
+                            <label for="<%= `${i}[]` %>">Exercise: </label>
+                            <select name="<%= `${i}[]` %>" id="<%= `${i}[]` %>">
+                                <% if(i <= list.length){ %>
+                                    <option value="<%= list[i-1][0] %>" selected><%= list[i-1][0] %></option>
+                                    <option value="Choose exercise">Choose exercise</option>
+                                    <% for(let exercise of exercisesList){ %>
+                                        <option value="<%= exercise %>"><%= exercise %></option>
+                                    <% } %>
+                                <% } else { %>
+                                    <option selected disabled>Choose exercise</option>
+                                    <% for(let exercise of exercisesList){ %>
+                                        <option value="<%= exercise %>"><%= exercise %></option>
+                                    <% } %>
+                                <% } %>
+                            </select>
 
-
-        <button type="submit">Update this plan</button>
+                            <label for="<%= `${i}[]` %>">Reps: </label>
+                            <select name="<%= `${i}[]` %>" id="<%= `${i}[]` %>">
+                                <% if(i <= list.length){ %>
+                                    <option value="<%= list[i-1][1] %>" selected><%= list[i-1][1] %></option>
+                                    <option>Choose rep count</option>
+                                    <% for(let j=5; j < 26; j++){ %>
+                                        <option value="<%= j %>"><%= j %></option>
+                                    <% } %>
+                                <% } else { %>
+                                    <option selected disabled>Choose rep count</option>
+                                    <% for(let j=5; j < 26; j++){ %>
+                                        <option value="<%= j %>"><%= j %></option>
+                                    <% } %>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
     </form>
-    
-</body>
-</html>

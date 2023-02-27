@@ -42,29 +42,29 @@ word3 = [
 ]
 
 prices = [
-    '9.99 $',
-    '19.99 $',
-    '34.99 $',
-    '69.69 $',
-    '42.00 $',
-    '99.99 $',
-    '120.00 $',
-    '149.49 $',
-    '72.49 $',
-    '199.19 $'
+    9.99,
+    19.99,
+    34.99,
+    69.69,
+    42.00,
+    99.99,
+    120.00,
+    149.49,
+    72.49,
+    199.19
 ]
 
 durations = [
-    '2 weeks',
-    '3 weeks',
-    '4 weeks',
-    '5 weeks',
-    '6 weeks',
-    '8 weeks',
-    '10 weeks',
-    '12 weeks',
-    '16 weeks',
-    '20 weeks'
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    10,
+    12,
+    16,
+    20
 ]
 
 levels = [
@@ -122,9 +122,13 @@ exercisesList = [
     'wrist extension'
 ]
 
-reps = [...Array(26).keys()].slice(5)
+numOfReps = [...Array(26).keys()].slice(5)
 
-numOfExercises = [...Array(13).keys()].slice(4)
+numOfExercises = [...Array(13).keys()].slice(3)
+
+numOfSets = [...Array(11).keys()].slice(1)
+
+numOfDays = [...Array(8).keys()].slice(3)
 
 function randomNum (list) {
     return list[Math.floor((Math.random()*list.length))];
@@ -133,31 +137,28 @@ function randomNum (list) {
 const seedDB = async () => {
     /* delete existing data */
     await TrainingPlan.deleteMany({});
-    /* create new one */
     for(let i=0; i<31; i++){
-        const plan = []
-        const rand = randomNum(numOfExercises);
-        for(let j=0; j < rand; j++){
-            let exerciseNum = {}
-            let exercise = {}
-            let a = randomNum(exercisesList)
-            let b = randomNum(reps)
-            exercise[a] = b;
-            exerciseNum[j+1] = exercise
-            plan.push(exerciseNum);
+        const plan = [] /* list of exercises (items below) */
+        const amountExercises = randomNum(numOfExercises);
+        for(let j=0; j < amountExercises; j++){
+            const item = {
+                'exercise': randomNum(exercisesList),
+                'sets': randomNum(numOfSets),
+                'reps': randomNum(numOfReps)
+            }
+            plan.push(item);
         };
-        /* console.log(plan) */
-
-        /* create training plans */
         const trainingplan = new TrainingPlan({
             title: `${randomNum(word1)} ${randomNum(word2)} ${randomNum(word3)}`,
             price: randomNum(prices),
             duration: randomNum(durations),
+            days: randomNum(numOfDays),
             level: randomNum(levels),
-            exercises: plan
+            exercises: plan 
         });
         /* save to db */
-        await trainingplan.save()
+        /* console.log(trainingplan); */
+        await trainingplan.save();
     };
 };
 

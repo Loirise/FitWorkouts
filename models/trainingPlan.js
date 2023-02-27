@@ -7,11 +7,15 @@ const TrainingplanSchema = new Schema({
         required: true
     },
     price: {
-        type: String,
+        type: Number,
         required: true
     },
     duration: {
-        type: String,
+        type: Number,
+        required: true
+    },
+    days: {
+        type: Number,
         required: true
     },
     level: {
