@@ -122,13 +122,13 @@ exercisesList = [
     'wrist extension'
 ]
 
-numOfReps = [...Array(26).keys()].slice(5)
+numOfRepsList = [...Array(26).keys()].slice(5)
 
-numOfExercises = [...Array(13).keys()].slice(3)
+numOfExercisesList = [...Array(13).keys()].slice(3)
 
-numOfSets = [...Array(11).keys()].slice(1)
+numOfSetsList = [...Array(11).keys()].slice(1)
 
-numOfDays = [...Array(8).keys()].slice(3)
+numOfDaysList = [...Array(8).keys()].slice(3)
 
 function randomNum (list) {
     return list[Math.floor((Math.random()*list.length))];
@@ -137,24 +137,20 @@ function randomNum (list) {
 const seedDB = async () => {
     /* delete existing data */
     await TrainingPlan.deleteMany({});
+    /* creating 31 random plans */
     for(let i=0; i<31; i++){
-        const plan = [] /* list of exercises (items below) */
-        const amountExercises = randomNum(numOfExercises);
-        for(let j=0; j < amountExercises; j++){
-            const item = {
-                'exercise': randomNum(exercisesList),
-                'sets': randomNum(numOfSets),
-                'reps': randomNum(numOfReps)
-            }
-            plan.push(item);
-        };
+        /* getting random number of exercises becuase there must be equal amount of exercises, sets and reps */
+        const x = randomNum(numOfExercisesList);
+        /* creating plan object */
         const trainingplan = new TrainingPlan({
             title: `${randomNum(word1)} ${randomNum(word2)} ${randomNum(word3)}`,
             price: randomNum(prices),
             duration: randomNum(durations),
-            days: randomNum(numOfDays),
+            days: randomNum(numOfDaysList),
             level: randomNum(levels),
-            exercises: plan 
+            exercises: Array.apply(null, {length: x}).map(i => randomNum(exercisesList)),
+            sets: Array.apply(null, {length: x}).map(i => randomNum(numOfSetsList)),
+            reps: Array.apply(null, {length: x}).map(i => randomNum(numOfRepsList)),
         });
         /* save to db */
         /* console.log(trainingplan); */

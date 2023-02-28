@@ -26,6 +26,14 @@ const TrainingplanSchema = new Schema({
     exercises: {
         type: Array,
         required: true
+    },
+    sets: {
+        type: Array,
+        required: true
+    },
+    reps: {
+        type: Array,
+        required: true
     }
 });
 

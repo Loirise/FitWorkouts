@@ -2,8 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const methodOverride = require('method-override');
-const ejsMate = require('ejs-mate')
+const ejsMate = require('ejs-mate');
 const TrainingPlan = require('./models/trainingPlan');
+const wrapAsync = require('./utils/wrapAsync');
+const ExpressError = require('./utils/ExpressError');
+const { trainingplanSchema } = require('./joiSchemas.js');
 
 const app = express();
 const db = mongoose.connection;
@@ -72,95 +75,69 @@ app.set('views', path.join(__dirname, '/views'));
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 
+const validatePlan = (req, res, next) => {
+    const { error } = trainingplanSchema.validate(req.body);
+    if(error){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(400, msg)
+    } else {
+        next();
+    };
+};
+
 app.get('/', (req, res) => {
     res.render('home.ejs');
 });
 
-app.get('/trainingplans', async (req, res) => {
+app.get('/trainingplans', wrapAsync(async (req, res) => {
     const trainingplans =  await TrainingPlan.find({});
     res.render('trainingplans/index.ejs', {trainingplans})
-});
+}));
 
 app.get('/trainingplans/new', (req, res) => {
     res.render('trainingplans/new.ejs', {exercisesList});
-})
+});
 
-app.post('/trainingplans', async (req, res) => {
-    /* get all exercises arrays */
-    let exercisesList = []
-    for(let i=1; i < 13; i++){
-        let list = []
-        let exercise = {}
-        if(req.body.hasOwnProperty(i)){
-            list = req.body[i]
-            exercise[list[0]] = list[1];
-            exercisesList.push(exercise);
-        };
-    };
-    /* convert exercicesList items into objects */
-    let exercises = []
-    for(let j=0; j < exercisesList.length; j++){
-        let temp = {};
-        temp[j+1] = exercisesList[j];
-        exercises.push(temp);
-    }
-    const trainingplanPart = req.body.trainingplan;
-    trainingplanPart['exercises'] = exercises;
-    const trainingplan = new TrainingPlan(trainingplanPart);
-    await trainingplan.save();
-    res.redirect(`/trainingplans/${trainingplan._id}`);
-})
+app.post('/trainingplans', validatePlan, wrapAsync(async (req, res) => {
+    /* save to db */
+    const newPlan = new TrainingPlan(req.body.trainingplan);
+    await newPlan.save();
+    res.redirect(`/trainingplans/${newPlan._id}`)
+}));
 
-app.get('/trainingplans/:id', async (req, res) => {
+app.get('/trainingplans/:id', wrapAsync(async (req, res) => {
     const plan = await TrainingPlan.findById(req.params.id)
     res.render('trainingplans/show.ejs', {plan});
-});
+}));
 
-app.get('/trainingplans/:id/edit', async (req, res) => {
+app.get('/trainingplans/:id/edit', wrapAsync(async (req, res) => {
     const plan = await TrainingPlan.findById(req.params.id)
-    const list = []
-    const exercises = plan.exercises
-    for(let i=0; i < exercises.length; i++){
-        for(const [keyOut, valueOut] of Object.entries(exercises[i])){
-            for(const [keyIn, valueIn] of Object.entries(valueOut)){
-                list.push([keyIn, valueIn])
-            };
-        };
-    };
-    res.render('trainingplans/edit.ejs', {plan, list, exercisesList});
-})
+    res.render('trainingplans/edit.ejs', {plan, exercisesList});
+}));
 
-app.put('/trainingplans/:id', async (req,res) => {
-    /* get all exercises arrays */
-    let exercisesList = []
-    for(let i=1; i < 13; i++){
-        let list = []
-        let exercise = {}
-        if(req.body.hasOwnProperty(i)){
-            list = req.body[i]
-            exercise[list[0]] = list[1];
-            exercisesList.push(exercise);
-        };
-    };
-    /* convert exercicesList items into objects */
-    let exercises = []
-    for(let j=0; j < exercisesList.length; j++){
-        let temp = {};
-        temp[j+1] = exercisesList[j];
-        exercises.push(temp);
-    }
-    const trainingplanPart = req.body.trainingplan;
-    trainingplanPart['exercises'] = exercises;
-    const { id } = req.params
-    const trainingplan = await TrainingPlan.findByIdAndUpdate(id, { ...trainingplanPart });
-    res.redirect(`/trainingplans/${ id }`);
-});
+app.put('/trainingplans/:id', validatePlan, wrapAsync(async (req,res) => {
+    /* get the id of the plan */
+    const { id } = req.params;
+    /* find in db by id and update */
+    const editedPlan = await TrainingPlan.findByIdAndUpdate(id, { ...req.body.trainingplan });
+    res.redirect(`/trainingplans/${editedPlan._id}`)
+}));
 
-app.delete('/trainingplans/:id', async (req, res) => {
+app.delete('/trainingplans/:id', wrapAsync(async (req, res) => {
     const {id} = req.params;
     await TrainingPlan.findByIdAndDelete(id);
     res.redirect('/trainingplans');
-})
+}));
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError(404, 'Page Not Found'));
+});
+
+app.use((err, req, res, next) => {
+    const { statusCode=500 } = err;
+    if(!err.message) err.message = 'Error. Something went wrong!';
+    res.status(statusCode).render('error.ejs', { err })
+});
 
 app.listen(3000, () => {
     console.log('Serving on port 3000');

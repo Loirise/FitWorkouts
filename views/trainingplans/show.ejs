@@ -14,19 +14,21 @@
         <table class="table">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col"></th>
                     <th scope="col">Exercise</th>
                     <th scope="col">Sets</th>
                     <th scope="col">Reps</th>
                 </tr>
             </thead>
             <tbody>
-            <% for(let item of plan.exercises){ %>
+            <% for(let i=0; i < plan.exercises.length; i++){ %>
                 <tr>
-                    <th scope="row"><%= plan.exercises.indexOf(item)+1 %></th>
-                    <td><%= item.exercise %></td>
-                    <td><%= item.sets %></td>
-                    <td><%= item.reps %></td>
+                    <% if (plan.exercises[i] && plan.sets[i] && plan.reps[i]) { %>
+                    <th scope="row"></th>
+                    <td><%= plan.exercises[i] %></td>
+                    <td><%= plan.sets[i] %></td>
+                    <td><%= plan.reps[i] %></td>
+                    <% } %>
                 </tr>
             <% } %>
             </tbody>

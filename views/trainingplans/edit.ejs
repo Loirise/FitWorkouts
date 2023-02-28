@@ -1,81 +1,93 @@
 <% layout('./layouts/boilerplate.ejs') %>
-<section class="w-75 mx-auto">
-    <div class="d-flex justify-content-between">
-        <h1 class="">Edit Plan</h1>
-        <div class="align-self-center">
-            <a href="/trainingplans" class="btn btn-primary">Go Back</a>
-        </div>
-    </div>
-    <form action="/trainingplans/<%= plan._id %>?_method=PUT" method="POST">
-        <div class="d-flex mb-3">
-            <div class="form-floating me-3 w-75">
-                <input type="text" class="form-control" name="trainingplan[title]" id="title" placeholder="Title" value="<%= plan.title %>">
-                <label for="title">Title</label>
-            </div>
-            <button class="ms-3 btn btn-success" type="submit">Update plan</button>
-        </div>
-        <!-- PRICE -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <label for="price" class="text-center w-50">Price <small>(in $USD)</small></label>
-            <input type="number" class="form-control w-50" name="trainingplan[price]" id="price" min="5" max="250" step="0.05" value="<%= plan.price %>">
-        </div>
-        <!-- DURATION -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <label for="duration" class="text-center w-50">Duration <small>(in weeks)</small></label>
-            <input type="number" class="form-control w-50" name="trainingplan[duration]" id="duration" min="1" max="52" value="<%= plan.duration %>">
-        </div>
-        <!-- LEVEL -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <label for="level" class="text-center w-50">Level</label>
-            <select class="form-select w-50" name="trainingplan[level]" id="level">
-                <% for(let item of ['beginner', 'intermediate', 'advanced']){ %>\
-                    <% if (item == plan.level) { %>
-                        <option selected value="<%= item %>"><%= item %></option>
-                    <% } else { %>
-                        <option value="<%= item %>"><%= item %></option>
-                    <% } %>
-                <% } %>
-            </select>
-        </div>
-        <div class="container">
-            <div class="row justify-content-between">
-                <% for(let i=1; i < 13; i++){ %>
-                    <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
-                        <div class="pb-2 px-2 pt-1 border shadow d-flex flex-column">
-                            <label for="<%= `${i}[]` %>">Exercise: </label>
-                            <select name="<%= `${i}[]` %>" id="<%= `${i}[]` %>">
-                                <% if(i <= list.length){ %>
-                                    <option value="<%= list[i-1][0] %>" selected><%= list[i-1][0] %></option>
-                                    <option value="Choose exercise">Choose exercise</option>
-                                    <% for(let exercise of exercisesList){ %>
-                                        <option value="<%= exercise %>"><%= exercise %></option>
-                                    <% } %>
-                                <% } else { %>
-                                    <option selected disabled>Choose exercise</option>
-                                    <% for(let exercise of exercisesList){ %>
-                                        <option value="<%= exercise %>"><%= exercise %></option>
-                                    <% } %>
-                                <% } %>
-                            </select>
 
-                            <label for="<%= `${i}[]` %>">Reps: </label>
-                            <select name="<%= `${i}[]` %>" id="<%= `${i}[]` %>">
-                                <% if(i <= list.length){ %>
-                                    <option value="<%= list[i-1][1] %>" selected><%= list[i-1][1] %></option>
-                                    <option>Choose rep count</option>
-                                    <% for(let j=5; j < 26; j++){ %>
-                                        <option value="<%= j %>"><%= j %></option>
-                                    <% } %>
-                                <% } else { %>
-                                    <option selected disabled>Choose rep count</option>
-                                    <% for(let j=5; j < 26; j++){ %>
-                                        <option value="<%= j %>"><%= j %></option>
-                                    <% } %>
+<section class="w-75 mx-auto">
+    <div class="d-flex justify-content-between mt-2">
+        <a href="/trainingplans/<%= plan._id %>" class="btn btn-primary">Go Back</a>
+        <label for="submit-btn" tabindex="0" class="btn btn-success">Edit plan</label>
+    </div>
+    <form action="/trainingplans/<%= plan._id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
+        <button type="submit" id="submit-btn" hidden></button>
+        <div class="input-group my-3">
+            <span class="input-group-text" id="title">Title</span>
+            <input type="text" class="form-control" name="trainingplan[title]" placeholder="New Training Program" aria-label="Title" aria-describedby="title" value="<%= plan.title %>" required>
+        </div>
+        <div class="d-flex">
+            <div class="input-group mb-3 me-2">
+                <span class="input-group-text" id="price">Price</span>
+                <input type="number" class="form-control" name="trainingplan[price]"  aria-label="Price" aria-describedby="price" min="0" max="999" value="<%= plan.price %>" step="0.01" required>
+                <span class="input-group-text">$</span>
+            </div>
+            <div class="input-group mb-3 ms-2">
+                <label class="input-group-text" for="level">Level</label>
+                <select class="form-select" id="level" name="trainingplan[level]">
+                    <% for(let level of ['beginner','intermediate','advanced']){ %>
+                        <% if (level == plan.level) { %>
+                        <option value="<%= plan.level %>" selected><%= plan.level %></option>
+                        <% } else { %>
+                        <option value="<%= level %>"><%= level %></option>
+                        <% } %>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+        <div class="d-flex">
+            <div class="input-group mb-3 me-2">
+                <span class="input-group-text" id="duration">Duration</span>
+                <input type="number" class="form-control" name="trainingplan[duration]"  aria-label="Duration" aria-describedby="duration" min="1" max="52" value="<%= plan.duration %>" step="1" required>
+                <span class="input-group-text">weeks</span>
+            </div>
+            <div class="input-group mb-3 ms-2">
+                <span class="input-group-text" id="days">Days</span>
+                <input type="number" class="form-control" name="trainingplan[days]"  aria-label="Days" aria-describedby="days" min="1" max="7" value="<%= plan.days %>" step="1" required>
+                <span class="input-group-text">/ week</span>
+            </div>
+        </div>
+        <section>
+            <% for( let i = 0; i < 12; i++ ) { %>
+                <div class="d-flex mb-2">
+                    <% if (plan.exercises[i] && plan.sets[i] && plan.reps[i]) { %>
+                        <!-- user previous values -->
+                        <div class="input-group">
+                            <label class="input-group-text" for="<%= `exercise${i}` %>">Exercise</label>
+                            <select class="form-select" id="<%= `exercise${i}` %>" name="trainingplan[exercises]" required>
+                                <option value="">Choose exercise</option>
+                                <option value="<%= plan.exercises[i] %>" selected><%= plan.exercises[i] %></option>
+                                <% for(let exercise of exercisesList){ %>
+                                <option value="<%= exercise %>"><%= exercise %></option>
                                 <% } %>
                             </select>
                         </div>
-                    </div>
-                <% } %>
-            </div>
-        </div>
+                        <div class="input-group mx-2">
+                            <span class="input-group-text" id="<%= `sets${i}` %>">Sets</span>
+                            <input type="number" class="form-control" name="trainingplan[sets]"  aria-label="Sets" aria-describedby="<%= `sets${i}` %>" min="1" max="20" value="<%= plan.sets[i] %>" step="1" required>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text" id="<%= `reps${i}` %>">Reps</span>
+                            <input type="number" class="form-control" name="trainingplan[reps]"  aria-label="Reps" aria-describedby="<%= `reps${i}` %>" min="1" max="100" value="<%= plan.reps[i] %>" step="1" required>
+                        </div>
+                    <% } else { %>
+                        <!-- empty values -->
+                        <div class="input-group">
+                            <label class="input-group-text" for="<%= `exercise${i}` %>">Exercise</label>
+                            <select class="form-select" id="<%= `exercise${i}` %>" name="trainingplan[exercises]" >
+                                <option value="" selected>Choose exercise</option>
+                                <% for(let exercise of exercisesList){ %>
+                                <option value="<%= exercise %>"><%= exercise %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text" id="<%= `sets${i}` %>">Sets</span>
+                            <input type="number" class="form-control" name="trainingplan[sets]"  aria-label="Sets" aria-describedby="<%= `sets${i}` %>" min="1" max="20" step="1">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text" id="<%= `reps${i}` %>">Reps</span>
+                            <input type="number" class="form-control" name="trainingplan[reps]"  aria-label="Reps" aria-describedby="<%= `reps${i}` %>" min="1" max="100" step="1">
+                        </div>
+                    <% } %>
+
+                </div>
+            <% } %>
+                        
     </form>
+</section>
