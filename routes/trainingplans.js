@@ -5,6 +5,7 @@ const ExpressError = require('../utils/ExpressError');
 const wrapAsync = require('../utils/wrapAsync');
 const TrainingPlan = require('../models/trainingPlan');
 const { trainingplanSchema } = require('../joiSchemas');
+const { isLoggedIn } = require('../middleware');
 
 const validatePlan = (req, res, next) => {
     const { error } = trainingplanSchema.validate(req.body);
@@ -71,11 +72,11 @@ router.get('/', wrapAsync(async (req, res) => {
     res.render('trainingplans/index.ejs', {trainingplans})
 }));
 
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render('trainingplans/new.ejs', {exercisesList});
 });
 
-router.post('/', validatePlan, wrapAsync(async (req, res) => {
+router.post('/', isLoggedIn, validatePlan, wrapAsync(async (req, res) => {
     const newPlan = new TrainingPlan(req.body.trainingplan);
     await newPlan.save();
     req.flash('success', 'Successfully made new plan!');
@@ -84,7 +85,6 @@ router.post('/', validatePlan, wrapAsync(async (req, res) => {
 
 router.get('/:id', wrapAsync(async (req, res) => {
     const plan = await TrainingPlan.findById(req.params.id);
-    console.log(plan)
     if(!plan){
         req.flash('error', 'Cannot find that workout plan');
         return res.redirect('/trainingplans');
@@ -92,7 +92,7 @@ router.get('/:id', wrapAsync(async (req, res) => {
     res.render('trainingplans/show.ejs', {plan});
 }));
 
-router.get('/:id/edit', wrapAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, wrapAsync(async (req, res) => {
     const plan = await TrainingPlan.findById(req.params.id);
     if(!plan){
         req.flash('error', 'Cannot find that workout plan');
@@ -101,14 +101,14 @@ router.get('/:id/edit', wrapAsync(async (req, res) => {
     res.render('trainingplans/edit.ejs', {plan, exercisesList});
 }));
 
-router.put('/:id', validatePlan, wrapAsync(async (req,res) => {
+router.put('/:id', isLoggedIn, validatePlan, wrapAsync(async (req,res) => {
     const { id } = req.params;
     const editedPlan = await TrainingPlan.findByIdAndUpdate(id, { ...req.body.trainingplan });
     req.flash('success', 'Successfully edited the plan.');
     res.redirect(`/trainingplans/${editedPlan._id}`);
 }));
 
-router.delete('/:id', wrapAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, wrapAsync(async (req, res) => {
     const {id} = req.params;
     await TrainingPlan.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted the plan.');

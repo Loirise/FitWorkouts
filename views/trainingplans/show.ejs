@@ -38,9 +38,7 @@
         <div class="mt-2 d-flex justify-content-around">
             <a href="/trainingplans" class="card-link btn btn-primary">Go Back</a>
             <a href="/trainingplans/<%= plan._id %>/edit" class="card-link btn btn-info mx-2">Edit Plan</a>
-            <form action="/trainingplans/<%= plan._id %>?_method=DELETE" method="POST" class="d-inline">
-                <button type="submit" class="btn btn-danger">DELETE</button>
-            </form>
+            <form action="/trainingplans/<%= plan._id %>?_method=DELETE" method="POST" class="d-inline"><button type="submit" class="btn btn-danger">DELETE</button></form>
         </div>
     </div>
 </div>

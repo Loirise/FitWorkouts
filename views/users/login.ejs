@@ -1,0 +1,37 @@
+<% layout('./layouts/boilerplate.ejs') %>
+<section class="container w-50 my-auto">
+  <div class="row">
+    <div class="card text-black" style="border-radius: 25px;">
+      <div class="card-body">
+        <p class="text-center h1 fw-bold mb-4 mx-2 mt-2">Fit Workouts</p>
+
+        <form class="mx-2 needs-validation" action="/login" method="POST" novalidate>
+          <div class="form-outline flex-fill mb-3">
+            <input type="text" id="username" name="username" class="form-control" required>
+            <label class="form-label" for="username" >Username</label>
+          </div>
+
+          <!-- <div class="form-outline flex-fill mb-3">
+            <input type="email" id="email" name="email" class="form-control" required>
+            <label class="form-label" for="email" >Your Email</label>
+          </div> -->
+
+          <div class="form-outline flex-fill mb-3">
+            <input type="password" id="password" name="password" class="form-control" required>
+            <label class="form-label" for="password" >Password</label>
+          </div>
+
+          <div class="d-flex">
+            <button type="submit" class="btn btn-primary btn-lg mx-auto">Log in</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end mt-2">
+    <div class="d-flex flex-column">
+      <p class="p-1 m-1">Don't have an account?</p>
+      <a href="/register" class="btn btn-info mx-auto">Create account</a>
+    </div>
+  </div>
+</section>
