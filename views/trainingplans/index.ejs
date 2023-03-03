@@ -1,27 +1,26 @@
 <% layout('./layouts/boilerplate.ejs') %>
 <section class="w-75 mx-auto">
     <h1 class="text-center mb-3">All Training Plans</h1>
-    <% for(let plan of trainingplans){ %>
-        <div class="card d-flex flex-column mb-3">
-            <div class="container-fluid">
-                <div class="row align-items-center">
-                    <div class="col-10 d-flex flex-column">
-                        <div class="">
-                            <h4 class="ms-3 mt-1"><%= plan.title %></h4>
+    <div class="container">
+        <div class="row">
+            <% for(let plan of trainingplans){ %>
+            <div class="col-12 col-md-6 col-xl-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold mb-3"><%= plan.title %></h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex flex-column mb-2 ms-2">
+                                <p class="card-subtitle text-muted"><%= plan.level %></p>
+                                <p class="card-subtitle mt-1 mb-2 text-muted"><%= plan.duration %> weeks</p>
+                                <p class="card-subtitle text-muted"><%= plan.days %> days/week</p>
+                            </div>
+                            <a href="/trainingplans/<%= plan._id %>" class="btn btn-info me-2">Details</a>
                         </div>
-                        <div class="d-flex">
-                            <h6 class="text-muted mx-3">$ <%= plan.price %></h6>
-                            <h6 class="text-muted mx-2"><%= plan.level %></h6>
-                            <h6 class="text-muted mx-2"><%= plan.duration %> weeks</h6>
-                            <h6 class="text-muted mx-3"><%= plan.days %>days/week</h6>
-                        </div>
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                        <a href="/trainingplans/<%= plan._id %>" class="btn btn-info px-2 py-1">Details</a>
                     </div>
                 </div>
-            </div> 
+            </div>
+            <% } %>
         </div>
-    <% } %>
+    </div>
+    
 </section>
-

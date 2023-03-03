@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const TrainingPlan = require('./models/trainingPlan');
+const User = require('./models/user');
 
 mongoose.connect('mongodb://127.0.0.1:27017/fitworkouts')
 
@@ -137,12 +138,17 @@ function randomNum (list) {
 const seedDB = async () => {
     /* delete existing data */
     await TrainingPlan.deleteMany({});
+    /* find admin and asign all the plans to be created to him */
+    const admin = await User.findByUsername('admin');
+    /* last 5 plans will be asigned to testuser */
+    const testuser = await User.findByUsername('testuser');
     /* creating 31 random plans */
     for(let i=0; i<31; i++){
         /* getting random number of exercises becuase there must be equal amount of exercises, sets and reps */
         const x = randomNum(numOfExercisesList);
         /* creating plan object */
         const trainingplan = new TrainingPlan({
+            author: i < 26 ? admin._id : testuser._id,
             title: `${randomNum(word1)} ${randomNum(word2)} ${randomNum(word3)}`,
             price: randomNum(prices),
             duration: randomNum(durations),
@@ -158,7 +164,9 @@ const seedDB = async () => {
     };
 };
 
-seedDB();
+seedDB().then(() => {
+    mongoose.connection.close();
+});
 
 
 
