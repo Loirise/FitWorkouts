@@ -4,3 +4,5 @@ Find best workout plans to get in shape or create one yourself and share it with
 test account:
   username: testuser,
   password: testuser
+
+seedUsers then seedPlans
