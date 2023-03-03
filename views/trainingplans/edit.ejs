@@ -1,42 +1,34 @@
 <% layout('./layouts/boilerplate.ejs') %>
-
-<section class="w-75 mx-auto">
-    <div class="d-flex justify-content-between mt-2">
+<section class="w-100 w-md-75 w-lg-50 mx-auto">
+    <div class="d-flex justify-content-between mt-1 p-1">
         <a href="/trainingplans/<%= plan._id %>" class="btn btn-primary">Go Back</a>
         <label for="submit-btn" tabindex="0" class="btn btn-success">Edit plan</label>
     </div>
-    <form action="/trainingplans/<%= plan._id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
+    <form action="/trainingplans/<%= plan._id %>?_method=PUT" method="POST" class="needs-validation p-1" novalidate>
         <button type="submit" id="submit-btn" hidden></button>
-        <div class="input-group my-3">
+        <div class="input-group my-2">
             <span class="input-group-text" id="title">Title</span>
             <input type="text" class="form-control" name="trainingplan[title]" placeholder="New Training Program" aria-label="Title" aria-describedby="title" value="<%= plan.title %>" required>
         </div>
-        <div class="d-flex">
-            <div class="input-group mb-3 me-2">
-                <span class="input-group-text" id="price">Price</span>
-                <input type="number" class="form-control" name="trainingplan[price]"  aria-label="Price" aria-describedby="price" min="0" max="999" value="<%= plan.price %>" step="0.01" required>
-                <span class="input-group-text">$</span>
-            </div>
-            <div class="input-group mb-3 ms-2">
-                <label class="input-group-text" for="level">Level</label>
-                <select class="form-select" id="level" name="trainingplan[level]">
-                    <% for(let level of ['beginner','intermediate','advanced']){ %>
-                        <% if (level == plan.level) { %>
-                        <option value="<%= plan.level %>" selected><%= plan.level %></option>
-                        <% } else { %>
-                        <option value="<%= level %>"><%= level %></option>
-                        <% } %>
+        <div class="input-group w-100 w-md-75 w-lg-50 mx-auto mb-2">
+            <label class="input-group-text" for="level">Level</label>
+            <select class="form-select" id="level" name="trainingplan[level]">
+                <% for(let level of ['beginner','intermediate','advanced']){ %>
+                    <% if (level == plan.level) { %>
+                    <option value="<%= plan.level %>" selected><%= plan.level %></option>
+                    <% } else { %>
+                    <option value="<%= level %>"><%= level %></option>
                     <% } %>
-                </select>
-            </div>
+                <% } %>
+            </select>
         </div>
-        <div class="d-flex">
-            <div class="input-group mb-3 me-2">
+        <div class="d-flex flex-column flex-md-row">
+            <div class="input-group mb-2 me-md-2">
                 <span class="input-group-text" id="duration">Duration</span>
                 <input type="number" class="form-control" name="trainingplan[duration]"  aria-label="Duration" aria-describedby="duration" min="1" max="52" value="<%= plan.duration %>" step="1" required>
                 <span class="input-group-text">weeks</span>
             </div>
-            <div class="input-group mb-3 ms-2">
+            <div class="input-group mb-2 ms-md-2">
                 <span class="input-group-text" id="days">Days</span>
                 <input type="number" class="form-control" name="trainingplan[days]"  aria-label="Days" aria-describedby="days" min="1" max="7" value="<%= plan.days %>" step="1" required>
                 <span class="input-group-text">/ week</span>
@@ -44,7 +36,7 @@
         </div>
         <section>
             <% for( let i = 0; i < 12; i++ ) { %>
-                <div class="d-flex mb-2">
+                <div class="d-flex flex-column flex-md-row mb-2 p-1 lightgray">
                     <% if (plan.exercises[i] && plan.sets[i] && plan.reps[i]) { %>
                         <!-- user previous values -->
                         <div class="input-group">
@@ -57,7 +49,7 @@
                                 <% } %>
                             </select>
                         </div>
-                        <div class="input-group mx-2">
+                        <div class="input-group my-1 my-md-0 mx-md-2">
                             <span class="input-group-text" id="<%= `sets${i}` %>">Sets</span>
                             <input type="number" class="form-control" name="trainingplan[sets]"  aria-label="Sets" aria-describedby="<%= `sets${i}` %>" min="1" max="20" value="<%= plan.sets[i] %>" step="1" required>
                         </div>
@@ -76,7 +68,7 @@
                                 <% } %>
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="input-group my-1 my-md-0 mx-md-2">
                             <span class="input-group-text" id="<%= `sets${i}` %>">Sets</span>
                             <input type="number" class="form-control" name="trainingplan[sets]"  aria-label="Sets" aria-describedby="<%= `sets${i}` %>" min="1" max="20" step="1">
                         </div>
@@ -85,9 +77,8 @@
                             <input type="number" class="form-control" name="trainingplan[reps]"  aria-label="Reps" aria-describedby="<%= `reps${i}` %>" min="1" max="100" step="1">
                         </div>
                     <% } %>
-
                 </div>
             <% } %>
-                        
+        </section>
     </form>
 </section>

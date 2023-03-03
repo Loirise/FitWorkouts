@@ -42,19 +42,6 @@ word3 = [
     'Routine'
 ]
 
-prices = [
-    9.99,
-    19.99,
-    34.99,
-    69.69,
-    42.00,
-    99.99,
-    120.00,
-    149.49,
-    72.49,
-    199.19
-]
-
 durations = [
     2,
     3,
@@ -150,7 +137,6 @@ const seedDB = async () => {
         const trainingplan = new TrainingPlan({
             author: i < 26 ? admin._id : testuser._id,
             title: `${randomNum(word1)} ${randomNum(word2)} ${randomNum(word3)}`,
-            price: randomNum(prices),
             duration: randomNum(durations),
             days: randomNum(numOfDaysList),
             level: randomNum(levels),

@@ -1,16 +1,12 @@
 <% layout('./layouts/boilerplate.ejs') %>
-<div class="card w-50 mx-auto">
-    <div class="card-body">
-        <h5 class="card-title text-center mb-3"><%= plan.title %> <small>created by: <!-- <= plan.author.username %> --></small></h5>
-        <div class="d-flex mb-2 justify-content-evenly border-bottom pb-2">
-            <h6 class="card-subtitle text-muted">$ <%= plan.price %></h6>
+<div class="card w-100 w-md-75 w-lg-50 p-5 mx-auto my-auto">
+    <div class="card-body divcard">
+        <h5 class="card-title text-center fw-bold mb-5"><%= plan.title %></h5>
+        <div class="d-flex justify-content-evenly border-top border-bottom mb-3 py-3">
             <h6 class="card-subtitle text-muted"><%= plan.level %></h6>
             <h6 class="card-subtitle text-muted"><%= plan.duration %> weeks</h6>
             <h6 class="card-subtitle text-muted"><%= plan.days %>days/week</h6>
         </div>
-        <!-- <div class="card-header text-center text-muted">
-            &darr;&darr;&darr;
-        </div> -->
         <table class="table">
             <thead class="thead-dark">
                 <tr>
@@ -33,9 +29,7 @@
             <% } %>
             </tbody>
         </table>
-
-        <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-        <div class="mt-2 d-flex justify-content-around">
+        <div class="d-flex justify-content-around mt-4">
             <a href="/trainingplans" class="card-link btn btn-primary">Go Back</a>
             <% if (currentUser && plan.author.equals(currentUser._id)) { %>
             <a href="/trainingplans/<%= plan._id %>/edit" class="card-link btn btn-info mx-2">Edit Plan</a>

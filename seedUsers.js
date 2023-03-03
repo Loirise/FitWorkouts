@@ -30,7 +30,6 @@ const seedUsers = async () => {
         const { username, email, password } = users[i];
         const user = new User({username, email});
         const registerUser = await User.register(user, password);
-        console.log(registerUser)
     };
 
 };

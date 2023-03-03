@@ -1,0 +1,104 @@
+const TrainingPlan = require('../models/trainingPlan');
+
+exercisesList = [
+    'bar dip',
+    'bench press',
+    'dumbbell chest press',
+    'push up',
+    'barbell front raise',
+    'cable lateral raise',
+    'dumbbell rear delt row',
+    'face pull',
+    'barbell curl',
+    'dumbbell curl',
+    'cable curl',
+    'hammer curl',
+    'bench dip',
+    'close-grip push up',
+    'barell lying triceps extension',
+    'overhead cable triceps extension',
+    'barbell lunge',
+    'front squat',
+    'goblet squat',
+    'pause squat',
+    'bulgarian split squat',
+    'barbell squat',
+    'side squat',
+    'back extension',
+    'barbell row',
+    'chin-up',
+    'pull-up',
+    'deadlift',
+    'kettlebell swing',
+    'barbell shrug',
+    'lat pulldown',
+    'romanian deadlift',
+    'hip thrust',
+    'cable crunch',
+    'hanging leg raise',
+    'oblique crunch',
+    'plank',
+    'side plank',
+    'sit-up',
+    'mountain climbers',
+    'heel raise',
+    'standing calf raise',
+    'seater calf raise',
+    'wrist curl',
+    'farmer walk',
+    'wrist extension'
+]
+
+module.exports.showAllPlans = async (req, res) => {
+    const trainingplans =  await TrainingPlan.find({});
+    res.render('trainingplans/index.ejs', {trainingplans})
+};
+
+module.exports.newPlanPage = (req, res) => {
+    res.render('trainingplans/new.ejs', {exercisesList});
+};
+
+module.exports.createNewPlan = async (req, res) => {
+    const newPlan = new TrainingPlan(req.body.trainingplan);
+    newPlan.author = req.user._id;
+    await newPlan.save();
+    req.flash('success', 'Successfully made new plan!');
+    res.redirect(`/trainingplans/${newPlan._id}`);
+}
+
+module.exports.showPlanPage = async (req, res) => {
+    const plan = await TrainingPlan.findById(req.params.id).populate('author');
+    if(!plan){
+        req.flash('error', 'Cannot find that workout plan');
+        return res.redirect('/trainingplans');
+    }
+    res.render('trainingplans/show.ejs', {plan});
+};
+
+module.exports.showEditPage = async (req, res) => {
+    const plan = await TrainingPlan.findById(req.params.id);
+    if(!plan){
+        req.flash('error', 'Cannot find that workout plan');
+        return res.redirect('/trainingplans');
+    }
+    res.render('trainingplans/edit.ejs', {plan, exercisesList});
+};
+
+module.exports.editPlan = async (req,res) => {
+    const { id } = req.params;
+    const editedPlan = await TrainingPlan.findByIdAndUpdate(id, { ...req.body.trainingplan });
+    req.flash('success', 'Successfully edited the plan.');
+    res.redirect(`/trainingplans/${editedPlan._id}`);
+};
+
+module.exports.deletePlan = async (req, res) => {
+    const {id} = req.params;
+    await TrainingPlan.findByIdAndDelete(id);
+    req.flash('success', 'Successfully deleted the plan.');
+    res.redirect('/trainingplans');
+};
+
+module.exports.showOwnPlansPage = async (req, res) => {
+    const plans = await TrainingPlan.find({author: req.user._id});
+    res.render('trainingplans/myplans.ejs', { plans });
+};

@@ -1,0 +1,26 @@
+body {
+    background-color: #eee;
+}
+
+@media (min-width: 768px) {
+    .w-md-75 {
+        width: 75% !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .w-lg-50 {
+        width: 50% !important;
+    }
+}
+
+@media (min-width: 1600px) {
+    .w-xl-25 {
+        width: 25% !important;
+    }
+}
+
+.lightgray {
+    background-color: #ddd;
+    border-radius: 5px;
+}

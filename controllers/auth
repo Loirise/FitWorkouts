@@ -1,0 +1,43 @@
+const User = require('../models/user');
+
+
+module.exports.showRegisterPage = (req, res) => {
+    res.render('users/register.ejs');
+};
+
+module.exports.registerUser = async (req, res, next) => {
+    try {
+        const { username, email, password } = req.body;
+        const user = new User({ username, email });
+        const registeredUser = await User.register(user, password);
+        req.login(registeredUser, (err) => {
+            if (err) { return next(err) }
+            req.flash('success', 'Account created!');
+            return res.redirect('/trainingplans');
+        });
+    } catch(e) {
+        if(e.message.substring(64,69) == 'email'){
+            e.message = "Email already in use."
+        }
+        req.flash('error', e.message);
+        return res.redirect('/register');
+    };
+};
+
+module.exports.showLoginPage = (req, res) => {
+    res.render('users/login.ejs');
+};
+
+module.exports.redirectAfterLogin = (req, res) => {
+    req.flash('success', 'Welcome!')
+    const redirectUrl = res.locals.returnTo || '/trainingplans';
+    res.redirect(redirectUrl);
+};
+
+module.exports.logoutUser = (req, res, next) => {
+    req.logout((err) => {
+    if(err) { return next(err) };
+    req.flash('success', 'Logged out');
+    res.redirect('/');
+    });
+};
