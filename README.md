@@ -13,13 +13,13 @@ Find best workout plans (randomly generated :P ) to get in shape or create one y
 * Run the index.js file:
 * ``` node index.js ```
 * You can use the site now, but registering is adviced to fully enjoy the site.
-* Or use one of the two generated users:
+### Two default users for testing:
 * ``` username: testuser ```
 * ``` password: testuser ```
-* or
+### or
 * ``` username: admin ```
 * ``` password: admin123 ```
-* Enjoy!
+### Enjoy!
 
 
 ## Project Screenshots
