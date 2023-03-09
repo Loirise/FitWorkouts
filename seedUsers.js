@@ -1,7 +1,8 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./models/user');
-
-mongoose.connect('mongodb://127.0.0.1:27017/fitworkouts')
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/fitworkouts'
+mongoose.connect(dbUrl)
 
 const db = mongoose.connection;
 

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -7,6 +9,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const passportLocal = require('passport-local');
+const MongoStore = require('connect-mongo');
 
 const ExpressError = require('./utils/ExpressError');
 const trainingplanRoutes = require('./routes/trainingplans');
@@ -16,10 +19,13 @@ const User = require('./models/user');
 const app = express();
 const db = mongoose.connection;
 
+/* env */
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/fitworkouts'
+const secret = process.env.SECRET || 'supersecretstuff123!'
 
 /* connect to mongodb */
 mongoose.set('strictQuery', false);
-mongoose.connect('mongodb://127.0.0.1:27017/fitworkouts')
+mongoose.connect(dbUrl)
 db.on('error', console.error.bind(console, 'connection error'));
 db.once('open', () => {
     console.log('Database connected');
@@ -35,9 +41,24 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/public', express.static('public')); /* this makes styles.css work */
 
+/* session store */
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret
+    }
+});
+
+store.on('error', function(e){
+    console.log("SESSION STORE ERROR", e)
+});
+
 /* session */
 const sessionConfig = {
-    secret: 'supersecretstuff123!',
+    store,
+    name: 'session',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
