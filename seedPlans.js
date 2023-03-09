@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const TrainingPlan = require('./models/trainingPlan');
 const User = require('./models/user');
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/fitworkouts'
-mongoose.connect(dbUrl)
+await mongoose.connect(dbUrl)
 
 const db = mongoose.connection;
 
@@ -125,7 +125,7 @@ function randomNum (list) {
 
 const seedDB = async () => {
     /* delete existing data */
-    await TrainingPlan.deleteMany({});
+    await TrainingPlan.deleteMany({})
     /* find admin and asign all the plans to be created to him */
     const admin = await User.findByUsername('admin');
     /* last 5 plans will be asigned to testuser */
