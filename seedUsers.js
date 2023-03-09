@@ -2,14 +2,18 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/fitworkouts'
-await mongoose.connect(dbUrl)
 
-const db = mongoose.connection;
+const connectDB = async () => {
+    try {
+        await mongoose.connect(dbUrl);
+        console.log('MongoDB connected!!')
+    }catch (err) {
+        console.log('Failed to connect to MongoDB', err)
+      }
+}
+connectDB()
 
-db.on('error', console.error.bind(console, 'connection error'));
-db.once('open', () => {
-    console.log('Database connected');
-});
+
 
 const testuser = {
     username: 'testuser',
