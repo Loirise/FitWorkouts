@@ -7,6 +7,9 @@ const connectDB = async () => {
     try {
         await mongoose.connect(dbUrl);
         console.log('MongoDB connected!!')
+        await seedUsers().then(() => {
+            mongoose.connection.close();
+        });
     }catch (err) {
         console.log('Failed to connect to MongoDB', err)
       }
@@ -39,6 +42,3 @@ const seedUsers = async () => {
 
 };
 
-seedUsers().then(() => {
-    mongoose.connection.close();
-});
