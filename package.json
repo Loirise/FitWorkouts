@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "seedUsers": "node seedUsers.js",
+    "seedPlans": "node seedPlans.js",
+    "start": "npm seedUsers & npm seedPlans & node index.js"
   },
   "keywords": [],
   "author": "",
