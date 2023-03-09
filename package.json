@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "seedUsers": "node seedUsers.js",
     "seedPlans": "node seedPlans.js",
-    "start": "npm seedUsers && npm seedPlans && node index.js"
+    "start": "npm run seedUsers && npm run seedPlans && node index.js"
   },
   "keywords": [],
   "author": "",
